@@ -17,7 +17,7 @@ services:
       - ./duplicati/backups:/backups
       - /local_source/data:/source/data
       - /local_source/data2:/source/data2
-   ports:
+    ports:
       - 8200:8200
     restart: unless-stopped
     networks:
