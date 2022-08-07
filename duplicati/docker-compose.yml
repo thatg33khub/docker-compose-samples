@@ -1,0 +1,25 @@
+version: '3'
+
+networks:
+  dockernet:
+    external: true
+
+services:
+  duplicati:
+    image: lscr.io/linuxserver/duplicati
+    container_name: duplicati
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Zurich
+    volumes:
+      - ./duplicati:/config
+      - ./duplicati/backups:/backups
+      - /local_source/data:/source/data
+      - /local_source/data2:/source/data2
+   ports:
+      - 8200:8200
+    restart: unless-stopped
+    networks:
+      - dockernet
+ 

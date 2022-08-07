@@ -1,0 +1,19 @@
+version: '3'
+
+networks:
+  dockernet:
+    external: true
+
+services:
+  bitwarden:
+    image: vaultwarden/server:latest
+    environment:
+      - WEBSOCKET_ENABLED='true' # Required to use websockets
+      - SIGNUPS_ALLOWED='true'   # set to false to disable signups
+    volumes:
+      - ./bitwarden:/data
+    ports:
+      - 9081:80
+    restart: always
+    networks:
+      - dockernet

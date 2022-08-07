@@ -1,0 +1,22 @@
+version: '3'
+
+networks:
+  dockernet:
+    external: true
+
+services:
+  linkding:
+    image: sissbruecker/linkding:latest
+    container_name: linkding
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - username=username  # will be used only once to initialise the container
+      - password=password  # will be used only once to initialise the container
+    volumes:
+      - ./linkding:/etc/linkding/data
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    networks:
+      - dockernet
