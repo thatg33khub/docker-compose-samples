@@ -1,0 +1,21 @@
+version: '3'
+
+networks:
+  dockernet:
+    external: true
+
+services:
+  homer:
+#    image: b4bz/homer:22.02.1  ## added version number due to regression
+    image: b4bz/homer:latest
+    container_name: homer
+    environment:
+     - PUID=1000
+     - PGID=1000
+    volumes:
+      - ./homer:/www/assets
+    ports:
+      - 9983:8080
+    restart: unless-stopped
+    networks:
+      - dockernet

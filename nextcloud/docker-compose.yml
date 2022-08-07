@@ -1,0 +1,40 @@
+version: '3'
+
+networks:
+  dockernet:
+    external: true
+
+services:
+  nextclouddb:
+    image: mariadb:10.7.1
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --skip-innodb-read-only-compressed
+    volumes:
+      - ./nextcloud/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=myr00tSQL-passw0rd!
+      - MYSQL_PASSWORD=mySQL-passw0rd!
+      - MYSQL_DATABASE=nextclouddata
+      - MYSQL_USER=nextclouduser
+    networks:
+      - dockernet
+
+  nextcloud:
+    image: nextcloud:latest
+    restart: unless-stopped
+    ports:
+      - 8444:80
+    links:
+      - nextclouddb
+    volumes:
+      - ./nextcloud/html:/var/www/html
+      - /local_data:/var/www/html/data
+    environment:
+      - MYSQL_PASSWORD=mySQL-passw0rd!
+      - MYSQL_DATABASE=nextclouddata
+      - MYSQL_USER=nextclouduser
+      - MYSQL_HOST=nextclouddb
+    networks:
+      - dockernet
+
+

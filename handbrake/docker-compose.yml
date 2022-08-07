@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  handbrake:
+    image: jlesage/handbrake
+    ports:
+      - "5800:5800"
+    volumes:
+      - "./handbrake:/config:rw"
+      - "/local_storage:/storage:ro"
+      - "/local_watch:/watch:rw"
+      - "/local_output:/output:rw"
+    restart: unless-stopped
+    

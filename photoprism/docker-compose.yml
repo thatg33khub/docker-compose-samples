@@ -1,0 +1,91 @@
+version: '3'
+
+networks:
+  dockernet:
+    external: true
+
+services:
+  photoprism:
+    image: photoprism/photoprism:latest
+    container_name: photoprism
+    depends_on:
+      - photodb
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    ports:
+      - "2342:2342"   # Default HTTP port (host:container)
+      - "2343:2343"   # Acceptance Test HTTP port (host:container)
+      - "40000:40000" # Go Debugger (host:container)
+    shm_size: "2gb"
+    environment:
+#      GOPROXY: "https://proxy.golang.org,direct"
+      PHOTOPRISM_UID: ${UID:-1000}                   # User ID
+      PHOTOPRISM_GID: ${GID:-1000}                   # Group ID
+      PHOTOPRISM_ADMIN_PASSWORD: "photoprismrootpwd"        # Admin password (min 4 characters)
+      ## External development server URL incl http:// or https:// and /path, :port is optional
+      PHOTOPRISM_SITE_URL: "https://mywebsite.com/"
+      PHOTOPRISM_SITE_TITLE: "PhotoPrism"
+      PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
+      PHOTOPRISM_SITE_DESCRIPTION: "AI-Powered Photos App. Tags and finds pictures without getting in your way!"
+      PHOTOPRISM_SITE_AUTHOR: "@photoprism_app"
+      PHOTOPRISM_DEBUG: "true"
+      PHOTOPRISM_READONLY: "false"
+      PHOTOPRISM_PUBLIC: "true"
+      PHOTOPRISM_EXPERIMENTAL: "true"
+      PHOTOPRISM_SERVER_MODE: "debug"
+      PHOTOPRISM_HTTP_HOST: "0.0.0.0"
+      PHOTOPRISM_HTTP_PORT: 2342
+      PHOTOPRISM_HTTP_COMPRESSION: "gzip"            # Improves transfer speed and bandwidth utilization (none or gzip)
+      PHOTOPRISM_DATABASE_DRIVER: "mysql"
+      PHOTOPRISM_DATABASE_SERVER: "photodb:4001"
+      PHOTOPRISM_DATABASE_NAME: "photoprismdb"
+      PHOTOPRISM_DATABASE_USER: "photoprismuser"
+      PHOTOPRISM_DATABASE_PASSWORD: "photoprismpwd"
+      PHOTOPRISM_TEST_DRIVER: "sqlite"
+      PHOTOPRISM_TEST_DSN: ".test.db"
+      PHOTOPRISM_DISABLE_CHOWN: "false"              # Disables storage permission updates on startup
+      PHOTOPRISM_DISABLE_BACKUPS: "false"            # Don't backup photo and album metadata to YAML files
+      PHOTOPRISM_DISABLE_WEBDAV: "false"             # Disables built-in WebDAV server
+      PHOTOPRISM_DISABLE_SETTINGS: "false"           # Disables Settings in Web UI
+      PHOTOPRISM_DISABLE_PLACES: "false"             # Disables reverse geocoding and maps
+      PHOTOPRISM_DISABLE_EXIFTOOL: "false"           # Don't create ExifTool JSON files for improved metadata extraction
+      PHOTOPRISM_DISABLE_TENSORFLOW: "false"         # Don't use TensorFlow for image classification
+      PHOTOPRISM_DETECT_NSFW: "false"                # Flag photos as private that MAY be offensive (requires TensorFlow)
+      PHOTOPRISM_UPLOAD_NSFW: "false"                # Allows uploads that may be offensive
+      PHOTOPRISM_DARKTABLE_PRESETS: "false"          # Enables Darktable presets and disables concurrent RAW conversion
+      PHOTOPRISM_THUMB_FILTER: "lanczos"             # Resample filter, best to worst: blackman, lanczos, cubic, linear
+      PHOTOPRISM_THUMB_UNCACHED: "true"              # Enables on-demand thumbnail rendering (high memory and cpu usage)
+      PHOTOPRISM_THUMB_SIZE: 2048                    # Pre-rendered thumbnail size limit (default 2048, min 720, max 7680)
+      # PHOTOPRISM_THUMB_SIZE: 4096                  # Retina 4K, DCI 4K (requires more storage); 7680 for 8K Ultra HD
+      PHOTOPRISM_THUMB_SIZE_UNCACHED: 7680           # On-demand rendering size limit (default 7680, min 720, max 7680)
+      PHOTOPRISM_JPEG_SIZE: 7680                     # Size limit for converted image files in pixels (720-30000)
+      PHOTOPRISM_JPEG_QUALITY: 92                    # Set to 95 for high-quality thumbnails (25-100)
+      TF_CPP_MIN_LOG_LEVEL: 0                        # Show TensorFlow log messages for development
+    working_dir: "/photoprism"
+    volumes:
+      - "/local_storage:/photoprism/storage"
+      - "/local_originals:/photoprism/originals"
+    restart: unless-stopped
+    networks:
+      - dockernet
+
+  photodb:
+    image: mariadb:10.7.1
+    command: mysqld --port=4001 --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+    expose:
+      - "4001"
+    ports:
+      - "4001:4001" # Database port (host:container)
+    volumes:
+#      - "./appdata/sql/mariadb-init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "./photoprism/database:/var/lib/mysql" 
+    environment:
+      MYSQL_ROOT_PASSWORD: photoprismrootpwd
+      MYSQL_USER: photoprismuser
+      MYSQL_PASSWORD: photoprismpwd
+      MYSQL_DATABASE: photoprismdb
+    restart: unless-stopped
+    networks:
+      - dockernet
+

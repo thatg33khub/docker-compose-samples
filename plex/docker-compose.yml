@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  plex:
+    image: linuxserver/plex
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+    volumes:
+      - ./plex/config:/config
+      - ./plex/transcode:/transcode
+      - /local_medias:/Medias
+    restart: unless-stopped
+    network_mode: host
