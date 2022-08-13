@@ -4,7 +4,8 @@ networks:
   dockernet:
     external: true
 
-  yacht:
+services:
+  yacht:   # default login = admin@yacht.local / pass
     container_name: yacht
     image: selfhostedpro/yacht
     ports:
