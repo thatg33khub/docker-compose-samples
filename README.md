@@ -7,3 +7,9 @@ Most use a predefined network "dockernet" which must be created (once) before ru
 ```
 docker network create -d bridge dockernet
 ```
+
+If you want to use one env file for all the containers, you can create a symlink with the following command (ex. for portainer)
+```
+ln -s ../.env portainer/.env
+```
+
