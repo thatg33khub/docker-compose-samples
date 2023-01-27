@@ -1,24 +1,18 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   npmdb:
     image: mariadb:10.7.1
     restart: always
     ports:
-    - 3305:3306
+    - ${npmdb_port}:3306
     volumes:
-      - ./npm/mysql:/var/lib/mysql
+      - ${appdata}/npm/mysql:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=myr00tSQL-passw0rd!
-      - MYSQL_PASSWORD=mySQL-passw0rd!
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=npm
       - MYSQL_USER=npm
-    networks:
-      - dockernet
 
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
@@ -30,12 +24,8 @@ services:
     links:
       - npmdb
     volumes:
-      - ./npm/config.json:/app/config/production.json 
-      #config.json must be a file. If it is a folder, delete it and create a file
-      #an example is available in the docker folder (npm_config.json)
-      - ./npm/data:/data
-      - ./npm/letsencrypt:/etc/letsencrypt
+      - ${appdata}/npm/config.json:/app/config/production.json 
+      - ${appdata}/npm/data:/data
+      - ${appdata}/npm/letsencrypt:/etc/letsencrypt
     environment:
       - DB_MYSQL_PORT:3306
-    networks:
-      - dockernet

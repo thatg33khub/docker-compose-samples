@@ -1,0 +1,12 @@
+version: "3.0"
+
+services:
+  memos:
+    image: neosmemo/memos:latest
+    container_name: memos
+    volumes:
+      - ${appdata}/memos/:/var/opt/memos
+    ports:
+      - ${memos_port}:5230
+    restart: unless-stopped
+

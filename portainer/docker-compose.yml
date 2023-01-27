@@ -1,20 +1,17 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   portainer:
     image: 'portainer/portainer-ce:latest'
     container_name: portainer
     #hostname: ${HOSTNAME}
-    restart: unless-stopped
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./portainer:/data portainer/portainer-ce
-      - ./portainer/portainer_data:/data
+      - ${appdata}/portainer:/data portainer/portainer-ce
+      - ${appdata}/portainer/portainer_data:/data
     ports:
-      - "9443:9443"
-    networks:
-      - dockernet
+      - ${portainer_http_port}:9000
+      - ${portainer_https_port}:9443
+      - 8000:8000
+    restart: unless-stopped

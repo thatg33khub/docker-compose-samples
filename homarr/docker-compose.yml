@@ -1,14 +1,12 @@
 version: '3'
-#---------------------------------------------------------------------#
-#                Homarr -  A homepage for your server.                #
-#---------------------------------------------------------------------#
+
 services:
   homarr:
     container_name: homarr
     image: ghcr.io/ajnart/homarr:latest
     restart: unless-stopped
     volumes:
-      - ./homarr/configs:/app/data/configs
-      - ./homarr/icons:/app/public/icons
+      - ${appdata}/homarr/configs:/app/data/configs
+      - ${appdata}/homarr/icons:/app/public/icons
     ports:
-      - '7575:7575'
+      - ${homarr_port}:7575

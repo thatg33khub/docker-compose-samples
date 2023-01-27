@@ -10,12 +10,12 @@ services:
     image: b4bz/homer:latest
     container_name: homer
     environment:
-     - PUID=1000
-     - PGID=1000
+     - PUID=${UID}
+     - PGID=${GID}
     volumes:
-      - ./homer:/www/assets
+      - ${appdata}/homer:/www/assets
     ports:
-      - 9983:8080
+      - ${homer_port}:8080
     restart: unless-stopped
     networks:
       - dockernet

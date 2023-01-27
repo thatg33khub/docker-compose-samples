@@ -8,16 +8,16 @@ services:
   transmission:
     image: linuxserver/transmission:latest
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Zurich
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TIME_ZONE}
       - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
     volumes:
-      - ./transmission/config:/config
-      - /local_downloads:/downloads
-      - /local_watch:/watch
+      - ${appdata}/transmission/config:/config
+      - ${medias}/downloads:/downloads
+      - ${medias}/watch:/watch
     ports:
-      - 9091:9091
+      - ${transmission_port}:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped

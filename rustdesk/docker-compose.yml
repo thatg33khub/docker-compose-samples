@@ -15,7 +15,7 @@ services:
     image: rustdesk/rustdesk-server:latest
     command: hbbs -r example.com:21117
     volumes:
-      - ./rustdesk/hbbs:/root
+      - ${appdata}/rustdesk/hbbs:/root
     networks:
       - rustdesk-net
     depends_on:
@@ -30,7 +30,7 @@ services:
     image: rustdesk/rustdesk-server:latest
     command: hbbr
     volumes:
-      - ./rustdesk/hbbr:/root
+      - ${appdata}/rustdesk/hbbr:/root
     networks:
       - rustdesk-net
     restart: unless-stopped

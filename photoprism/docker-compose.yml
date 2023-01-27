@@ -1,9 +1,5 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   photoprism:
     image: photoprism/photoprism:latest
@@ -14,17 +10,17 @@ services:
       - seccomp:unconfined
       - apparmor:unconfined
     ports:
-      - "2342:2342"   # Default HTTP port (host:container)
-      - "2343:2343"   # Acceptance Test HTTP port (host:container)
-      - "40000:40000" # Go Debugger (host:container)
+      - ${photoprism_port}:2342   # Default HTTP port (host:container)
+      - 2343:2343   # Acceptance Test HTTP port (host:container)
+      - 40000:40000 # Go Debugger (host:container)
     shm_size: "2gb"
     environment:
 #      GOPROXY: "https://proxy.golang.org,direct"
-      PHOTOPRISM_UID: ${UID:-1000}                   # User ID
-      PHOTOPRISM_GID: ${GID:-1000}                   # Group ID
-      PHOTOPRISM_ADMIN_PASSWORD: "photoprismrootpwd"        # Admin password (min 4 characters)
+      PHOTOPRISM_UID: ${UID}                   # User ID
+      PHOTOPRISM_GID: ${GID}                   # Group ID
+      PHOTOPRISM_ADMIN_PASSWORD: "${PHOTOPRISM_ADMIN_PASSWORD}"        # Admin password (min 4 characters)
       ## External development server URL incl http:// or https:// and /path, :port is optional
-      PHOTOPRISM_SITE_URL: "https://mywebsite.com/"
+      PHOTOPRISM_SITE_URL: ${PHOTOPRISM_SITE_URL}
       PHOTOPRISM_SITE_TITLE: "PhotoPrism"
       PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
       PHOTOPRISM_SITE_DESCRIPTION: "AI-Powered Photos App. Tags and finds pictures without getting in your way!"
@@ -39,12 +35,12 @@ services:
       PHOTOPRISM_HTTP_COMPRESSION: "gzip"            # Improves transfer speed and bandwidth utilization (none or gzip)
       PHOTOPRISM_DATABASE_DRIVER: "mysql"
       PHOTOPRISM_DATABASE_SERVER: "photodb:4001"
-      PHOTOPRISM_DATABASE_NAME: "photoprismdb"
-      PHOTOPRISM_DATABASE_USER: "photoprismuser"
-      PHOTOPRISM_DATABASE_PASSWORD: "photoprismpwd"
+      PHOTOPRISM_DATABASE_NAME: "photoprism"
+      PHOTOPRISM_DATABASE_USER: "photoprism"
+      PHOTOPRISM_DATABASE_PASSWORD: "photoprism"
       PHOTOPRISM_TEST_DRIVER: "sqlite"
       PHOTOPRISM_TEST_DSN: ".test.db"
-      PHOTOPRISM_DISABLE_CHOWN: "false"              # Disables storage permission updates on startup
+      PHOTOPRISM_DISABLE_CHOWN: "true"              # Disables storage permission updates on startup
       PHOTOPRISM_DISABLE_BACKUPS: "false"            # Don't backup photo and album metadata to YAML files
       PHOTOPRISM_DISABLE_WEBDAV: "false"             # Disables built-in WebDAV server
       PHOTOPRISM_DISABLE_SETTINGS: "false"           # Disables Settings in Web UI
@@ -64,28 +60,23 @@ services:
       TF_CPP_MIN_LOG_LEVEL: 0                        # Show TensorFlow log messages for development
     working_dir: "/photoprism"
     volumes:
-      - "/local_storage:/photoprism/storage"
-      - "/local_originals:/photoprism/originals"
+      - "${medias}/Photoprism:/photoprism/storage"
+      - "${medias}/Photos:/photoprism/originals"
+      - "${nextcloud}/data/user/files/photos_import:/photoprism/import"
     restart: unless-stopped
-    networks:
-      - dockernet
 
   photodb:
     image: mariadb:10.7.1
     command: mysqld --port=4001 --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
     expose:
-      - "4001"
+      - ${photoprismdb_port}
     ports:
-      - "4001:4001" # Database port (host:container)
+      - ${photoprismdb_port}:4001
     volumes:
-#      - "./appdata/sql/mariadb-init.sql:/docker-entrypoint-initdb.d/init.sql"
-      - "./photoprism/database:/var/lib/mysql" 
+      - "${appdata}/photoprism/database:/var/lib/mysql" 
     environment:
-      MYSQL_ROOT_PASSWORD: photoprismrootpwd
-      MYSQL_USER: photoprismuser
-      MYSQL_PASSWORD: photoprismpwd
-      MYSQL_DATABASE: photoprismdb
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${PHOTOPRISM}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${PHOTOPRISM}
     restart: unless-stopped
-    networks:
-      - dockernet
-

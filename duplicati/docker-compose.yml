@@ -9,16 +9,15 @@ services:
     image: lscr.io/linuxserver/duplicati
     container_name: duplicati
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Zurich
+      - PUID=${UID}
+      - PGID=${GID}
+      - TZ=${TIME_ZONE}
     volumes:
-      - ./duplicati:/config
-      - ./duplicati/backups:/backups
-      - /local_source/data:/source/data
-      - /local_source/data2:/source/data2
+      - ${appdata}/duplicati:/config
+      - ${appdata}/duplicati/backups:/backups
+      - ${medias}:/source/data
     ports:
-      - 8200:8200
+      - ${duplicati_port}:8200
     restart: unless-stopped
     networks:
       - dockernet
