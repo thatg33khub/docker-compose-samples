@@ -13,5 +13,5 @@ services:
       - ${appdata}/jellyfin:/config
       - ${medias}:/data/medias
     ports:
-      - 8096:8096
+      - ${jellyfin_port}:8096
     restart: unless-stopped
