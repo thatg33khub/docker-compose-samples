@@ -1,0 +1,12 @@
+version: '3.2'
+
+services:
+  dockcheck-web:
+    container_name: dockcheck-web
+    image: palleri/dockcheck-web:latest
+    restart: unless-stopped
+    ports:
+      - ${dockcheck_port}:80
+    volumes:
+      - ${appdata}/dockcheck:/var/www/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
