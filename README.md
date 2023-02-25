@@ -5,7 +5,7 @@ NB: this stack uses compose V2, it is therefore important that you use an up to 
 
 ## Folder structure
 The folder structure is supposed to look like this:
-
+```
 /home/user/docker/
     | .env
     |-- bitwarden/
@@ -23,7 +23,7 @@ The folder structure is supposed to look like this:
 
 /path/to/medias/
     |-- ...
-
+```
 
 NB: Unlike most users, the appdata is not a subfolder of the container (ex.: docker/portainer/appdata) because I like to keep it separate. If you want to have everyting inside the "docker" folder, just set the "appdata" path location to "/home/user/docker/appdata" in the ".env" file.
 
