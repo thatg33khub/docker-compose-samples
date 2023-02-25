@@ -5,11 +5,6 @@ then
     exit 2
 fi
 
-# Assuming the following file structure: /home/user/docker/application_name/docker-compose.yml
-echo "move to the docker folder"
-echo "move to /home/${SUDO_USER}/docker/"
-cd /home/${SUDO_USER}/docker/
-
 # Choose the command to execute
 echo "Choose the command you want to use:"
 echo "1 - Start all containers"
