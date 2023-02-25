@@ -43,6 +43,11 @@ If you want to start, stop or restart all the containers in one go, you can use 
 sudo sh start-stop-restart_all_containers.sh
 ```
 
+4. If you have issues with some containers not working properly, it might be due to an access right issue with the appdata folder (because the container is usually run as root). In this case go to your appdata folder and run the following command and restart the container:
+```
+sudo chown -R ${USER}:${USER} /path/to/appdata/*
+```
+
 
 ## Some notes
 ### The .env file
