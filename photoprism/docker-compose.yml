@@ -12,7 +12,7 @@ services:
     ports:
       - ${photoprism_port}:2342   # Default HTTP port (host:container)
       - ${photoprism_acceptance}:2343   # Acceptance Test HTTP port (host:container)
-      - ${photoprism_debug}:40000 # Go Debugger (host:container)
+#      - ${photoprism_debug}:40000 # Go Debugger (host:container)
     shm_size: "2gb"
     environment:
 #      GOPROXY: "https://proxy.golang.org,direct"
