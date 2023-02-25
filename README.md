@@ -35,7 +35,7 @@ The steps are very simple:
 2. Update the ".env" file with your variables, in particular the folder location and the different passwords.
 3. Execute the `docker compose up -d` command for the containers you want to start, for example
 ```
-docker compose -f /portainer/docker-compose up -d
+docker compose -f /portainer/docker-compose.yml up -d
 ```
 
 If you want to start, stop or restart all the containers in one go, you can use the provided script with the following command:
@@ -48,6 +48,7 @@ sudo sh start-stop-restart_all_containers.sh
 ### The .env file
 The ".env" file is shared between all the containers. 
 It has lots of benefits but in this particular case it allows you to easily share docker compose files without having to go through each of them to scramble the usernames, folders and passwords. You just need to scramble the ".env" file and you are all set.  ;)
+
 You can find good documentation on the docker website: https://docs.docker.com/compose/environment-variables/env-file/
 
 
@@ -59,5 +60,6 @@ If you add a container to the stack that is not in the current repo, there are a
 ```
 ln -s ../.env portainer/.env
 ```
+
 
 NB: if you get an error like "WARNING: The `MyNewVariable` variable is not set. Defaulting to a blank string." when starting the container, it means that you did not properly add the variable to the ".env" file.
