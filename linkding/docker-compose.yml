@@ -1,9 +1,5 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   linkding:
     image: sissbruecker/linkding:latest
@@ -18,5 +14,3 @@ services:
     ports:
       - ${linkding_port}:9090
     restart: unless-stopped
-    networks:
-      - dockernet

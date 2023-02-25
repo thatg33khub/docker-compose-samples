@@ -1,10 +1,7 @@
 version: '3'
 
-# default login = admin@yacht.local / pass
-
-networks:
-  dockernet:
-    external: true
+# default user = admin@yacht.local
+# default password = pass
 
 services:
   yacht:   
@@ -16,5 +13,3 @@ services:
       - ${appdata}/appdata/yacht:/config
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
-    networks:
-      - dockernet

@@ -1,9 +1,5 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   duplicati:
     image: lscr.io/linuxserver/duplicati
@@ -19,6 +15,3 @@ services:
     ports:
       - ${duplicati_port}:8200
     restart: unless-stopped
-    networks:
-      - dockernet
- 

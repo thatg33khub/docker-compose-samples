@@ -1,9 +1,5 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   homer:
 #    image: b4bz/homer:22.02.1  ## added version number due to regression
@@ -17,5 +13,3 @@ services:
     ports:
       - ${homer_port}:8080
     restart: unless-stopped
-    networks:
-      - dockernet

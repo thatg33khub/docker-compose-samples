@@ -1,9 +1,5 @@
 version: '3'
 
-networks:
-  dockernet:
-    external: true
-
 services:
   transmission:
     image: linuxserver/transmission:latest
@@ -21,5 +17,3 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
-    networks:
-      - dockernet
