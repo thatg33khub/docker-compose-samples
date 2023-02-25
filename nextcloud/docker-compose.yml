@@ -1,5 +1,8 @@
 version: '3'
 
+# If you get an error that the config folder is not writable, run the following command
+# sudo chmod 777 -R /path/to/nextcloud/
+
 services:
   nextclouddb:
     image: mariadb:10.7.1

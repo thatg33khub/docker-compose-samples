@@ -33,7 +33,8 @@ The steps are very simple:
 
 1. Clone the repository
 2. Update the ".env" file with your variables, in particular the folder location and the different passwords.
-3. Execute the `docker compose up -d` command for the containers you want to start, for example
+3. Create the required folders with your user (not as root) to avoid access right issues.
+4. Execute the `docker compose up -d` command for the containers you want to start, for example:
 ```
 docker compose -f /portainer/docker-compose.yml up -d
 ```
@@ -43,9 +44,9 @@ If you want to start, stop or restart all the containers in one go, you can use 
 sudo sh start-stop-restart_all_containers.sh
 ```
 
-4. If you have issues with some containers not working properly, it might be due to an access right issue with the appdata folder (because the container is usually run as root). In this case go to your appdata folder and run the following command and restart the container:
+4. If you have issues with some containers not working properly, it might be due to an access right issue with the folders created as root when running the containers for the first time. In this case run the following command to change the owner of the appdata folder and restart the container:
 ```
-sudo chown -R ${USER}:${USER} /path/to/appdata/*
+sudo chown -R ${USER}:${USER} /path/to/appdata
 ```
 
 
