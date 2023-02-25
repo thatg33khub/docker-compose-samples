@@ -7,13 +7,12 @@ services:
       - PUID=${UID}
       - PGID=${GID}
       - TZ=${TIME_ZONE}
-      - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
     volumes:
       - ${appdata}/transmission/config:/config
       - ${medias}/downloads:/downloads
       - ${medias}/watch:/watch
     ports:
-      - ${transmission_port}:9091
-      - 51413:51413
-      - 51413:51413/udp
+      - ${transmission_web}:9091
+      - ${transmission_port}:51413
+      - ${transmission_port}:51413/udp
     restart: unless-stopped

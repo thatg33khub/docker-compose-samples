@@ -9,7 +9,7 @@ services:
       - PGID=${GID}
       - TZ=${TIME_ZONE}
     volumes:
-      - ${appdata}/duplicati:/config
+      - ${appdata}/duplicati/config:/config
       - ${appdata}/duplicati/backups:/backups
       - ${medias}:/source/data
     ports:
