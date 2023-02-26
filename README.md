@@ -1,5 +1,7 @@
 # docker-compose-samples
-Collection of docker-compose samples
+The goal of this repo is to offer a ready-to-use stack of containers. Clone the repo, update the config and run the containers you want.
+If you are looking to install the *arr suite (Radarr, Sonarr, etc) you can check my others repo.
+
 
 NB: this stack uses compose V2, it is therefore important that you use an up to date version of docker compose
 
