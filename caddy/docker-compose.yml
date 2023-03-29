@@ -9,11 +9,11 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ${appdata}/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - ./site:/srv
       - ${appdata}/caddy/data:/data
       - ${appdata}/caddy/config:/config
 #      - ${appdata}/caddy/certs:/certs      # required if you want to use your own certificates
-    environment:
+#    environment:
 #      - CADDY_DOCKER_CERTS_PATH=certs      # required if you want to use your own certificates
 

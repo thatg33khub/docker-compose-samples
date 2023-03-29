@@ -2,7 +2,6 @@
 The goal of this repo is to offer a ready-to-use stack of containers. Clone the repo, update the config and run the containers you want.
 If you are looking to install the *arr suite (Radarr, Sonarr, etc) you can check my others repo.
 
-
 NB: this stack uses compose V2, it is therefore important that you use an up to date version of docker compose
 
 ## Folder structure
@@ -46,7 +45,9 @@ If you want to start, stop or restart all the containers in one go, you can use 
 sudo sh start-stop-restart_all_containers.sh
 ```
 
-4. If you have issues with some containers not working properly, it might be due to an access right issue with the folders created as root when running the containers for the first time. In this case run the following command to change the owner of the appdata folder and restart the container:
+5. Configure your reverse proxy (see note below)
+
+NB: If you have issues with some containers not working properly, it might be due to an access right issue with the folders created as root when running the containers for the first time. In this case run the following command to change the owner of the appdata folder and restart the container:
 ```
 sudo chown -R ${USER}:${USER} /path/to/appdata
 ```
@@ -59,6 +60,9 @@ It has lots of benefits but in this particular case it allows you to easily shar
 
 You can find good documentation on the docker website: https://docs.docker.com/compose/environment-variables/env-file/
 
+### Reverse Proxy
+The default reverse proxy is Caddy. It is very simple but yet very powerfull. It uses a file based configuration (see example provided). Just restart the container when you update the config.
+If you prefer Nginx Proxy Manager, then kill the caddy container with the `docker compose down` command, delete the caddy folder (or rename the compose file) and rename the compose file in the npm folder to "docker-compose.yml". You can now start the npm container.
 
 ### Adding a new container to the stack
 If you add a container to the stack that is not in the current repo, there are a few easy steps to properly integrate it.
@@ -68,6 +72,5 @@ If you add a container to the stack that is not in the current repo, there are a
 ```
 ln -s ../.env portainer/.env
 ```
-
 
 NB: if you get an error like "WARNING: The `MyNewVariable` variable is not set. Defaulting to a blank string." when starting the container, it means that you did not properly add the variable to the ".env" file.
