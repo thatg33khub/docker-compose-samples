@@ -2,40 +2,37 @@
 The goal of this repo is to offer a ready-to-use stack of containers. Clone the repo, update the config and run the containers you want.
 If you are looking to install the *arr suite (Radarr, Sonarr, etc) you can check my others repo.
 
-NB: this stack uses compose V2, it is therefore important that you use an up to date version of docker compose
+NB: this stack uses compose V2, it is therefore important that you use an up-to-date version of docker compose
 
 ## Folder structure
 The folder structure is supposed to look like this:
 ```
 /home/user/docker/
     | .env
+    |
+    |-- appdata/
+    |     |-- bitwarden
+    |     |-- portainer
+    |     |-- ...    
+    |
     |-- bitwarden/
     |     |-- docker-compose.yml
+    |
     |-- portainer/
     |     |-- docker-compose.yml
-    |...
-
-/path/to/appdata/
-    |-- bitwarden/
-    |    |-- ...
-    |-- portainer/
-    |     |-- ...
+    |
     |...
 
 /path/to/medias/
+    |-- movies/
+    |-- pictures/
     |-- ...
 ```
 
-NB: Unlike most users, the appdata is not a subfolder of the container (ex.: docker/portainer/appdata) because I like to keep it separate. If you want to have everyting inside the "docker" folder, just set the "appdata" path location to "/home/user/docker/appdata" in the ".env" file.
-
-
 ## How to use the repo
-The steps are very simple:
-
 1. Clone the repository
-2. Update the ".env" file with your variables, in particular the folder location and the different passwords.
-3. Create the required folders with your user (not as root) to avoid access right issues.
-4. Execute the `docker compose up -d` command for the containers you want to start, for example:
+2. Update the ".env" file with your variables, in particular the folder location and the passwords.
+3. Execute the `docker compose up -d` command for the containers you want to start, for example:
 ```
 docker compose -f /portainer/docker-compose.yml up -d
 ```
@@ -45,18 +42,21 @@ If you want to start, stop or restart all the containers in one go, you can use 
 sudo sh start-stop-restart_all_containers.sh
 ```
 
-5. Configure your reverse proxy (see note below)
-
-NB: If you have issues with some containers not working properly, it might be due to an access right issue with the folders created as root when running the containers for the first time. In this case run the following command to change the owner of the appdata folder and restart the container:
+4. Update the access rights of the appdata folder.
+When you first run the docker as sudo, the appdata subfolders are created by the root user and this can cause issues with certain containers. Run the following command and restart all the containers to fix this:
 ```
 sudo chown -R ${USER}:${USER} /path/to/appdata
-```
+``` 
+
+5. Configure your reverse proxy to make the
+(see note below)
+
 
 
 ## Some notes
 ### The .env file
 The ".env" file is shared between all the containers. 
-It has lots of benefits but in this particular case it allows you to easily share docker compose files without having to go through each of them to scramble the usernames, folders and passwords. You just need to scramble the ".env" file and you are all set.  ;)
+It has lots of benefits but in this particular case it allows you to easily share docker compose files without having to go through each of them to scramble the usernames, folders and passwords.
 
 You can find good documentation on the docker website: https://docs.docker.com/compose/environment-variables/env-file/
 
