@@ -56,21 +56,22 @@ sudo chown -R ${USER}:${USER} /path/to/appdata
 ## Some notes
 ### The .env file
 The ".env" file is shared between all the containers. 
-It has lots of benefits but in this particular case it allows you to easily share docker compose files without having to go through each of them to scramble the usernames, folders and passwords.
+It has lots of benefits like centralizing all the port mapping and sharing the path to various medias wihtin one parameter.
+In this particular case it allows me to easily share the docker compose files without having to go through each of them to scramble the usernames, folders and passwords. :)
 
 You can find good documentation on the docker website: https://docs.docker.com/compose/environment-variables/env-file/
 
 ### Reverse Proxy
-The default reverse proxy is Caddy. It is very simple but yet very powerfull. It uses a file based configuration (see example provided). Just restart the container when you update the config.
+The default reverse proxy is Caddy. It is very simple but yet very powerfull. It uses a file based configuration (see the "Caddyfile" provided). Just restart the container when you update the config.
 If you prefer Nginx Proxy Manager, then kill the caddy container with the `docker compose down` command, delete the caddy folder (or rename the compose file) and rename the compose file in the npm folder to "docker-compose.yml". You can now start the npm container.
 
 ### Adding a new container to the stack
 If you add a container to the stack that is not in the current repo, there are a few easy steps to properly integrate it.
-1. use variables in the new compose file by replacing the port number or path name with the following syntax `${MyNewVariable}` (check what has been done in the existing containers)
-2. add the new variables to the ".env" file `MyNewVariable=xxx`
+1. use variables in the new compose file by replacing the port number or path name with the following syntax `${MyVariable}` (check what has been done in the existing containers)
+2. add the new variables to the ".env" file `MyVariable=value`
 3. create a symlink from the root ".env" file to the new containers subfolder (ex. for portainer)
 ```
 ln -s ../.env portainer/.env
 ```
 
-NB: if you get an error like "WARNING: The `MyNewVariable` variable is not set. Defaulting to a blank string." when starting the container, it means that you did not properly add the variable to the ".env" file.
+NB: if you get an error like "WARNING: The `MyVariable` variable is not set. Defaulting to a blank string." when starting the container, it means that you did not properly add the variable to the ".env" file or that the symlink to the .env file wasn't created.
