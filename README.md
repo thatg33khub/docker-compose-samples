@@ -8,7 +8,7 @@ NB: this stack uses compose V2, it is therefore important that you use an up-to-
 2. Update the ".env" file with your variables, in particular the folder location and the passwords.
 3. Create the "dockernet" and "arr_stack" networks
 ```
-docker network create dockernet && docker network create arr_stack
+sudo docker network create dockernet && sudo docker network create arr_stack
 ```
 4. Execute the `docker compose up -d` command for the containers you want to start, for example:
 ```
@@ -23,7 +23,7 @@ When you first run the docker as sudo, the appdata subfolders are created by the
 ```
 sudo chown -R ${USER}:${USER} /path/to/appdata
 ``` 
-6. Configure your reverse proxy 
+6. Configure your reverse proxy and restart it 
 (see note below)
 
 

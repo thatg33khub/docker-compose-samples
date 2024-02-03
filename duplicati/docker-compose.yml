@@ -5,9 +5,9 @@ services:
     image: lscr.io/linuxserver/duplicati
     container_name: duplicati
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TIME_ZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - ${appdata}/duplicati/config:/config
       - ${appdata}/duplicati/backups:/backups
