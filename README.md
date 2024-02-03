@@ -18,8 +18,6 @@ To start all the containers in one go, you can use the provided script with the 
 ```
 sudo sh start-stop-restart_all_containers.sh
 ```
-If you get an error "Error response from daemon ...", try pulling the images manually (```docker pull fallenbagel/jellyseerr``` for example)
-
 5. Update the access rights of the appdata folder.
 When you first run the docker as sudo, the appdata subfolders are created by the root user and this can cause issues with certain containers. Run the following command and restart all the containers to fix this:
 ```
