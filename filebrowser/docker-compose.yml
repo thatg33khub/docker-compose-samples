@@ -1,0 +1,19 @@
+version: "3"
+services:
+  filebrowser:
+    image: hurlenko/filebrowser
+    user: ${PUID}:${PGID}
+    ports:
+      - ${fileserver_port}:8080
+    volumes:
+      - ${appdata}:/config
+      - ${sharedfolder}/fileserver:/data
+    environment:
+      - FB_BASEURL=/filebrowser
+    restart: always
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
