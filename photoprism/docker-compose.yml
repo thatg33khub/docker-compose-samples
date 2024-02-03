@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   photoprism:
@@ -10,73 +10,87 @@ services:
       - seccomp:unconfined
       - apparmor:unconfined
     ports:
-      - ${photoprism_port}:2342   # Default HTTP port (host:container)
-      - ${photoprism_acceptance}:2343   # Acceptance Test HTTP port (host:container)
-#      - ${photoprism_debug}:40000 # Go Debugger (host:container)
-    shm_size: "2gb"
+      - ${photoprism_port}:2342 # Default HTTP port (host:container)
+      - ${photoprism_port2}:2343 # Acceptance Test HTTP port (host:container)
+      - 40000:40000 # Go Debugger (host:container)
+    shm_size: 2gb
     environment:
-#      GOPROXY: "https://proxy.golang.org,direct"
-      PHOTOPRISM_UID: ${UID}                   # User ID
-      PHOTOPRISM_GID: ${GID}                   # Group ID
-      PHOTOPRISM_ADMIN_PASSWORD: "${PHOTOPRISM_ADMIN_PASSWORD}"        # Admin password (min 4 characters)
+      #      GOPROXY: "https://proxy.golang.org,direct"
+      PHOTOPRISM_UID: ${PUID} # User ID
+      PHOTOPRISM_GID: ${PGID} # Group ID
+      PHOTOPRISM_ADMIN_PASSWORD: ${PHOTOPRISM} # Admin password (min 4 characters)
       ## External development server URL incl http:// or https:// and /path, :port is optional
       PHOTOPRISM_SITE_URL: ${PHOTOPRISM_SITE_URL}
-      PHOTOPRISM_SITE_TITLE: "PhotoPrism"
-      PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
-      PHOTOPRISM_SITE_DESCRIPTION: "AI-Powered Photos App. Tags and finds pictures without getting in your way!"
+      PHOTOPRISM_SITE_TITLE: PhotoPrism
+      PHOTOPRISM_SITE_CAPTION: Browse Your Life
+      PHOTOPRISM_SITE_DESCRIPTION: AI-Powered Photos App. Tags and finds pictures
+        without getting in your way!
       PHOTOPRISM_SITE_AUTHOR: "@photoprism_app"
       PHOTOPRISM_DEBUG: "true"
       PHOTOPRISM_READONLY: "false"
       PHOTOPRISM_PUBLIC: "true"
       PHOTOPRISM_EXPERIMENTAL: "true"
-      PHOTOPRISM_SERVER_MODE: "debug"
-      PHOTOPRISM_HTTP_HOST: "0.0.0.0"
-      PHOTOPRISM_HTTP_PORT: ${photoprism_port}
-      PHOTOPRISM_HTTP_COMPRESSION: "gzip"            # Improves transfer speed and bandwidth utilization (none or gzip)
-      PHOTOPRISM_DATABASE_DRIVER: "mysql"
-      PHOTOPRISM_DATABASE_SERVER: "photodb:4001"
-      PHOTOPRISM_DATABASE_NAME: "photoprism"
-      PHOTOPRISM_DATABASE_USER: "photoprism"
-      PHOTOPRISM_DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      PHOTOPRISM_TEST_DRIVER: "sqlite"
-      PHOTOPRISM_TEST_DSN: ".test.db"
-      PHOTOPRISM_DISABLE_CHOWN: "true"              # Disables storage permission updates on startup
-      PHOTOPRISM_DISABLE_BACKUPS: "false"            # Don't backup photo and album metadata to YAML files
-      PHOTOPRISM_DISABLE_WEBDAV: "false"             # Disables built-in WebDAV server
-      PHOTOPRISM_DISABLE_SETTINGS: "false"           # Disables Settings in Web UI
-      PHOTOPRISM_DISABLE_PLACES: "false"             # Disables reverse geocoding and maps
-      PHOTOPRISM_DISABLE_EXIFTOOL: "false"           # Don't create ExifTool JSON files for improved metadata extraction
-      PHOTOPRISM_DISABLE_TENSORFLOW: "false"         # Don't use TensorFlow for image classification
-      PHOTOPRISM_DETECT_NSFW: "false"                # Flag photos as private that MAY be offensive (requires TensorFlow)
-      PHOTOPRISM_UPLOAD_NSFW: "false"                # Allows uploads that may be offensive
-      PHOTOPRISM_DARKTABLE_PRESETS: "false"          # Enables Darktable presets and disables concurrent RAW conversion
-      PHOTOPRISM_THUMB_FILTER: "lanczos"             # Resample filter, best to worst: blackman, lanczos, cubic, linear
-      PHOTOPRISM_THUMB_UNCACHED: "true"              # Enables on-demand thumbnail rendering (high memory and cpu usage)
-      PHOTOPRISM_THUMB_SIZE: 2048                    # Pre-rendered thumbnail size limit (default 2048, min 720, max 7680)
+      PHOTOPRISM_SERVER_MODE: debug
+      PHOTOPRISM_HTTP_HOST: 0.0.0.0
+      PHOTOPRISM_HTTP_PORT: 2342
+      PHOTOPRISM_HTTP_COMPRESSION: gzip # Improves transfer speed and bandwidth utilization (none or gzip)
+      PHOTOPRISM_DATABASE_DRIVER: mysql
+      PHOTOPRISM_DATABASE_SERVER: photodb:${photoprismdb_port}
+      PHOTOPRISM_DATABASE_NAME: photoprism
+      PHOTOPRISM_DATABASE_USER: photoprism
+      PHOTOPRISM_DATABASE_PASSWORD: photoprism
+      PHOTOPRISM_TEST_DRIVER: sqlite
+      PHOTOPRISM_TEST_DSN: .test.db
+      PHOTOPRISM_DISABLE_CHOWN: "true" # Disables storage permission updates on startup
+      PHOTOPRISM_DISABLE_BACKUPS: "false" # Don't backup photo and album metadata to YAML files
+      PHOTOPRISM_DISABLE_WEBDAV: "false" # Disables built-in WebDAV server
+      PHOTOPRISM_DISABLE_SETTINGS: "false" # Disables Settings in Web UI
+      PHOTOPRISM_DISABLE_PLACES: "false" # Disables reverse geocoding and maps
+      PHOTOPRISM_DISABLE_EXIFTOOL: "false" # Don't create ExifTool JSON files for improved metadata extraction
+      PHOTOPRISM_DISABLE_TENSORFLOW: "false" # Don't use TensorFlow for image classification
+      PHOTOPRISM_DETECT_NSFW: "false" # Flag photos as private that MAY be offensive (requires TensorFlow)
+      PHOTOPRISM_UPLOAD_NSFW: "false" # Allows uploads that may be offensive
+      PHOTOPRISM_DARKTABLE_PRESETS: "false" # Enables Darktable presets and disables concurrent RAW conversion
+      PHOTOPRISM_THUMB_FILTER: lanczos # Resample filter, best to worst: blackman, lanczos, cubic, linear
+      PHOTOPRISM_THUMB_UNCACHED: "true" # Enables on-demand thumbnail rendering (high memory and cpu usage)
+      PHOTOPRISM_THUMB_SIZE: 2048 # Pre-rendered thumbnail size limit (default 2048, min 720, max 7680)
       # PHOTOPRISM_THUMB_SIZE: 4096                  # Retina 4K, DCI 4K (requires more storage); 7680 for 8K Ultra HD
-      PHOTOPRISM_THUMB_SIZE_UNCACHED: 7680           # On-demand rendering size limit (default 7680, min 720, max 7680)
-      PHOTOPRISM_JPEG_SIZE: 7680                     # Size limit for converted image files in pixels (720-30000)
-      PHOTOPRISM_JPEG_QUALITY: 92                    # Set to 95 for high-quality thumbnails (25-100)
-      TF_CPP_MIN_LOG_LEVEL: 0                        # Show TensorFlow log messages for development
-    working_dir: "/photoprism"
+      PHOTOPRISM_THUMB_SIZE_UNCACHED: 7680 # On-demand rendering size limit (default 7680, min 720, max 7680)
+      PHOTOPRISM_JPEG_SIZE: 7680 # Size limit for converted image files in pixels (720-30000)
+      PHOTOPRISM_JPEG_QUALITY: 92 # Set to 95 for high-quality thumbnails (25-100)
+      TF_CPP_MIN_LOG_LEVEL: 0 # Show TensorFlow log messages for development
+    working_dir: /photoprism
     volumes:
-      - "${medias}/Photoprism:/photoprism/storage"
-      - "${medias}/Photos:/photoprism/originals"
-      - "${nextcloud}/data/user/files/photos_import:/photoprism/import"
+      - ${appdata}/photoprism/storage:/photoprism/storage
+      - ${photo_storage}/Photos:/photoprism/originals
+      - ${photo_import}:/photoprism/import
+    cpus: 0.5
+    mem_limit: 1024m
     restart: unless-stopped
+    networks:
+      - dockernet
 
   photodb:
     image: mariadb:10.7.1
-    command: mysqld --port=4001 --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+    command: mysqld --port=4001 --transaction-isolation=READ-COMMITTED
+      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      --max-connections=512 --innodb-rollback-on-timeout=OFF
+      --innodb-lock-wait-timeout=120
     expose:
       - ${photoprismdb_port}
     ports:
-      - ${photoprismdb_port}:4001
+      - ${photoprismdb_port}:4001 # Database port (host:container)
     volumes:
-      - "${appdata}/photoprism/database:/var/lib/mysql" 
+      - ${appdata}/database:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${PHOTOPRISM}
       MYSQL_USER: ${PHOTOPRISM}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${PHOTOPRISM}
       MYSQL_DATABASE: ${PHOTOPRISM}
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

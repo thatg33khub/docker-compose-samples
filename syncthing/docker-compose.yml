@@ -6,15 +6,15 @@ services:
     container_name: syncthing
     hostname: syncthing #optional
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TIME_ZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - ${appdata}/syncthing/config:/config
-      - ${medias}:/source/medias
+      - ${photo_storage}:/source/photos
     ports:
-      - ${syncthing_port}:8384
-      - 22000:22000/tcp
-      - 22000:22000/udp
-      - 21027:21027/udp
+      - ${syncthing_portA}:8384
+      - ${syncthing_portB}:22000/tcp
+      - ${syncthing_portB}:22000/udp
+      - ${syncthing_portC}:21027/udp
     restart: unless-stopped

@@ -5,13 +5,24 @@ services:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
-      - TZ=${TIME_ZONE}
-    #  - JELLYFIN_PublishedServerUrl=192.168.x.xx #optional
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - JELLYFIN_PublishedServerUrl=${jellyfin_url} #optional
     volumes:
-      - ${appdata}/jellyfin:/config
-      - ${medias}:/data/medias
+      - ${appdata}:/config
+      - ${movie_folder}:/data/movies
+      - ${show_folder}:/data/shows
+      - ${music_folder}:/data/music
     ports:
       - ${jellyfin_port}:8096
+    #  - 8920:8920 #optional
+    #  - 7359:7359/udp #optional
+    #  - 1900:1900/udp #optional
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

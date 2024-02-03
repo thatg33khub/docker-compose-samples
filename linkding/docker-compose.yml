@@ -7,10 +7,16 @@ services:
     environment:
       - PUID=${UID}
       - PGID=${GID}
-      - username=${username}
-      - password=password  # will be used only once to initialise the container
+      - username=${USER}
+      - password=${PASS}  # will be used only once to initialise the container
     volumes:
       - ${appdata}/linkding:/etc/linkding/data
     ports:
       - ${linkding_port}:9090
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

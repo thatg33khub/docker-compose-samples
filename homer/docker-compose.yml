@@ -6,10 +6,16 @@ services:
     image: b4bz/homer:latest
     container_name: homer
     environment:
-     - PUID=${UID}
-     - PGID=${GID}
+     - PUID=${PUID}
+     - PGID=${PUID}
     volumes:
-      - ${appdata}/homer:/www/assets
+      - ${appata}/homer:/www/assets
     ports:
       - ${homer_port}:8080
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

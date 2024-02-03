@@ -10,3 +10,9 @@ services:
       - GOTIFY_DEFAULTUSER_PASS=user
     volumes:
       - ${appdata}/gotify:/app/data
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

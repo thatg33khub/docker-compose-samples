@@ -15,3 +15,9 @@ services:
     ports:
       - ${duplicati_port}:8200
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

@@ -1,37 +1,40 @@
-version: '3'
-
-networks:
-  rustdesk-net:
-    external: false
+version: "3"
 
 services:
   hbbs:
     container_name: hbbs
     ports:
-      - 21115:21115
-      - 21116:21116
-      - 21116:21116/udp
-      - 21118:21118
+      - ${rustdesk_a}:21115
+      - ${rustdesk_b}:21116
+      - ${rustdesk_b}:21116/udp
+      - ${rustdesk_d}:21118
     image: rustdesk/rustdesk-server:latest
-    command: hbbs -r example.com:21117
+    command: hbbs -r ${DOMAIN}:${rustdesk_c}
+    environment:
+      - KEY_PRIV=${KEY_PRIV}
+      - KEY_PUB=${KEY_PUB}
     volumes:
-      - ${appdata}/rustdesk/hbbs:/root
-    networks:
-      - rustdesk-net
+      - ${appdata}/hbbs:/root
     depends_on:
       - hbbr
     restart: unless-stopped
-
+    networks:
+      - rustdesk-net
+      
   hbbr:
     container_name: hbbr
     ports:
-      - 21117:21117
-      - 21119:21119
+      - ${rustdesk_c}:21117
+      - ${rustdesk_e}:21119
     image: rustdesk/rustdesk-server:latest
     command: hbbr
     volumes:
-      - ${appdata}/rustdesk/hbbr:/root
+      - ${appdata}/hbbr:/root
+    restart: unless-stopped
     networks:
       - rustdesk-net
-    restart: unless-stopped
 
+
+networks:
+  rustdesk-net:
+    external: false

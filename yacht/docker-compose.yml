@@ -1,15 +1,18 @@
 version: '3'
 
-# default user = admin@yacht.local
-# default password = pass
-
 services:
-  yacht:   
+  yacht:   # default login = admin@yacht.local / pass
     container_name: yacht
     image: selfhostedpro/yacht
     ports:
       - ${yacht_port}:8000
     volumes:
-      - ${appdata}/appdata/yacht:/config
+      - ${appdata}/yacht/config:/config
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

@@ -9,4 +9,10 @@ services:
     ports:
       - ${memos_port}:5230
     restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
 

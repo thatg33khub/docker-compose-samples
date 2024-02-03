@@ -10,3 +10,9 @@ services:
     volumes:
       - ${appdata}/dockcheck:/var/www/html
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

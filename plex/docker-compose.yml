@@ -4,12 +4,14 @@ services:
   plex:
     image: linuxserver/plex
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
       - VERSION=docker
     volumes:
       - ${appdata}/plex/config:/config
       - ${appdata}/plex/transcode:/transcode
-      - ${medias}/local_medias:/Medias
+      - ${movie_folder}:/data/movies
+      - ${show_folder}:/data/shows
+      - ${music_folder}:/data/music
     restart: unless-stopped
     network_mode: host

@@ -1,0 +1,22 @@
+version: "3.5"
+
+services:
+  dashy:
+    container_name: Dashy
+    image: lissy93/dashy
+    volumes:
+      - ${appdata}/dashy-config.yml:/app/public/conf.yml
+    ports:
+      - ${dashy_port}:80
+    environment:
+      - NODE_ENV=production
+      - UID=${PUID}
+      - GID=${PGID}
+
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'node', '/app/services/healthcheck']
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

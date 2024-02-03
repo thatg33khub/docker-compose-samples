@@ -6,9 +6,14 @@ services:
     ports:
       - ${handbrake_port}:5800
     volumes:
-      - ${appdata}/handbrake:/config:rw
-      - ${medias}/medias:/storage:ro
-      - ${medias}/watch:/watch:rw
-      - ${medias}/output:/output:rw
+      - ${appdata}/config:/config:rw
+      - ${sharedfolder}/handbrake:/storage:ro
+      - ${sharedfolder}/handbrake/VideoConversion/watch:/watch:rw
+      - ${sharedfolder}/handbrake/output:/output:rw
     restart: unless-stopped
-    
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true

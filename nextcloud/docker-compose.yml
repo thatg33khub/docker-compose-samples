@@ -1,20 +1,19 @@
 version: '3'
 
-# If you get an error that the config folder is not writable, run the following command
-# sudo chmod 777 -R /path/to/nextcloud/
-
 services:
   nextclouddb:
     image: mariadb:10.7.1
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --skip-innodb-read-only-compressed
     volumes:
-      - ${appdata}/nextcloud/mysql:/var/lib/mysql
+      - ${appdata}/mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
+    networks:
+      - dockernet
 
   nextcloud:
     image: nextcloud:latest
@@ -24,10 +23,16 @@ services:
     links:
       - nextclouddb
     volumes:
-      - ${appdata}/nextcloud/html:/var/www/html
-      - ${nextcloud}/data:/var/www/html/data
+      - ${appdata}/html:/var/www/html
+      - ${nextcloud_folder}:/var/www/html/data
     environment:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=nextclouddb
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
