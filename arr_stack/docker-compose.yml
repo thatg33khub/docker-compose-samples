@@ -53,7 +53,7 @@ services:
       - arr_stack
 
   jellyseerr:
-    image: fallenbagel/jellyseerr:latest
+    image: fallenbagel/jellyseerr
     container_name: jellyseerr
     environment:
       - LOG_LEVEL=debug
