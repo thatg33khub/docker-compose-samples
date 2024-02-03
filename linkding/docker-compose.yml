@@ -5,8 +5,8 @@ services:
     image: sissbruecker/linkding:latest
     container_name: linkding
     environment:
-      - PUID=${UID}
-      - PGID=${GID}
+      - PUID=${PUID}
+      - PGID=${PGID}
       - username=${USER}
       - password=${PASS}  # will be used only once to initialise the container
     volumes:

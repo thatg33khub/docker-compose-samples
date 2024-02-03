@@ -67,8 +67,7 @@ services:
     cpus: 0.5
     mem_limit: 1024m
     restart: unless-stopped
-    networks:
-      - dockernet
+    networks: []
 
   photodb:
     image: mariadb:10.7.1
@@ -88,9 +87,5 @@ services:
       MYSQL_PASSWORD: ${PHOTOPRISM}
       MYSQL_DATABASE: ${PHOTOPRISM}
     restart: unless-stopped
-    networks:
-      - dockernet
-
-networks:
-  dockernet:
-    external: true
+    networks: []
+networks: {}
