@@ -1,0 +1,31 @@
+version: "2.1"
+
+# change the image to use another distro
+
+services:
+  webtop:
+    image: lscr.io/linuxserver/webtop:debian-kde
+    container_name: webtop
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - TITLE=Webtop #optional
+    volumes:
+      - ${appdata}:/config
+      - /var/run/docker.sock:/var/run/docker.sock #optional
+    ports:
+      - ${webtop_port1}:3000
+      - ${webtop_port2}:3001
+    #    devices:
+    #      - /dev/dri:/dev/dri #optional
+    shm_size: 1gb #optional
+    restart: unless-stopped
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
