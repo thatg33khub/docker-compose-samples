@@ -40,7 +40,7 @@ services:
     volumes:
       - ${appdata}/sabnzbd:/config
       - ${download_folder}:/downloads
-    #   ports:         # moved to gluetun
+    #   ports:         # moved to gluetun / uncomment t
     #     - 8080:8080
     restart: unless-stopped
     depends_on:

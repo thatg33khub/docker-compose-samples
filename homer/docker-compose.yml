@@ -9,7 +9,7 @@ services:
      - PUID=${PUID}
      - PGID=${PUID}
     volumes:
-      - ${appata}/homer:/www/assets
+      - ${appdata}/homer:/www/assets
     ports:
       - ${homer_port}:8080
     restart: unless-stopped

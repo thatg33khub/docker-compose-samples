@@ -7,8 +7,8 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${appata}/configs:/app/data/configs
-      - ${appata}/icons:/app/public/icons
+      - ${appdata}/configs:/app/data/configs
+      - ${appdata}/icons:/app/public/icons
     ports:
       - ${homarr_port}:7575
     networks:

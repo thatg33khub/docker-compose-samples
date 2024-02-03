@@ -11,7 +11,7 @@ services:
     volumes:
       - ${appdata}/duplicati/config:/config
       - ${appdata}/duplicati/backups:/backups
-      - ${medias}:/source/data
+      - ${photo_storage}:/source/photos
     ports:
       - ${duplicati_port}:8200
     restart: unless-stopped
