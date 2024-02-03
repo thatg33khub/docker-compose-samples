@@ -12,3 +12,9 @@ services:
     ports:
       - ${bitwarden_port}:80
     restart: always
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
