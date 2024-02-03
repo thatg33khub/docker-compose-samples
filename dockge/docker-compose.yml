@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    ports:
+      # Host Port : Container Port
+      - ${dockge_port}:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${appdata}:/app/data
+      - ../.env:/mnt/appdata/.env
+      - /opt/stacks:/opt/stacks
+    environment:
+      # Tell Dockge where is your stacks directory
+      - DOCKGE_STACKS_DIR=/opt/stacks
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
+
