@@ -1,0 +1,20 @@
+---
+services:
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${appdata}:/config
+    ports:
+      - ${heimdall_port}:80
+#      - 443:443
+    restart: unless-stopped
+    networks:
+      - dockernet
+networks:
+  dockernet:
+    external: true
