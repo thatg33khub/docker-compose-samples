@@ -1,41 +1,8 @@
-# docker-compose file for running paperless from the docker container registry.
-# This file contains everything paperless needs to run.
-# Paperless supports amd64, arm and arm64 hardware.
-#
-# All compose files of paperless configure paperless in the following way:
-#
-# - Paperless is (re)started on system boot, if it was running before shutdown.
-# - Docker volumes for storing data are managed by Docker.
-# - Folders for importing and exporting files are created in the same directory
-#   as this file and mounted to the correct folders inside the container.
-# - Paperless listens on port 8000.
-#
-# In addition to that, this docker-compose file adds the following optional
-# configurations:
-#
-# - Instead of SQLite (default), PostgreSQL is used as the database server.
-# - Apache Tika and Gotenberg servers are started with paperless and paperless
-#   is configured to use these services. These provide support for consuming
-#   Office documents (Word, Excel, Power Point and their LibreOffice counter-
-#   parts.
-#
-# To install and update paperless with this file, do the following:
-#
-# - Copy this file as 'docker-compose.yml' and the files 'docker-compose.env'
-#   and '.env' into a folder.
-# - Run 'docker-compose pull'.
-# - Run 'docker-compose run --rm webserver createsuperuser' to create a user.
-# - Run 'docker-compose up -d'.
-#
-# For more extensive installation and update instructions, refer to the
-# documentation.
-
-version: "3.4"
-
 services:
 
   broker:
-    image: docker.io/library/redis:7
+    image: docker.io/library/redis:7.2
+    container_name: paperless-broker
     restart: unless-stopped
     volumes:
       - redisdata:/data
@@ -43,7 +10,9 @@ services:
       - dockernet
 
   db:
-    image: docker.io/library/postgres:13
+    image: docker.io/library/postgres:17
+    #image: pgautoupgrade/pgautoupgrade
+    container_name: paperless-db
     restart: unless-stopped
     volumes:
       - ${appdata}/db:/var/lib/postgresql/data
@@ -52,12 +21,13 @@ services:
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
     cpus: 0.5
-    mem_limit: 1024m
+    mem_limit: 2048m
     networks:
       - dockernet
-  
+
   webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.18.1
+    container_name: paperless-webserver
     restart: unless-stopped
     depends_on:
       - db
@@ -80,10 +50,12 @@ services:
       retries: 5
     volumes:
       - ${appdata}/other:/usr/src/paperless/data
-      - ${sharedfolder}/Paperless/documents:/usr/src/paperless/media
-      - ${sharedfolder}/Paperless_backup:/usr/src/paperless/export
-      - ${sharedfolder}/Paperless/scan:/usr/src/paperless/consume
+      - ${private_medias}/paperless/documents:/usr/src/paperless/media
+      - ${private_medias}/paperless_backup:/usr/src/paperless/export
+      - ${sharedfolder}/scan:/usr/src/paperless/consume
     environment:
+      PAPERLESS_URL: ${PAPERLESS_URL}
+      PAPERLESS_ALLOWED_HOSTS: ${PAPERLESS_ALLOWED_HOSTS}
       PAPERLESS_TIME_ZONE: ${TZ}
       PAPERLESS_OCR_LANGUAGE: ${PAPERLESS_OCR_LANGUAGE}
       PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY}
@@ -93,22 +65,43 @@ services:
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
       PAPERLESS_CONSUMER_POLLING: 30
-    cpus: 0.5
-    mem_limit: 1024m
+      PAPERLESS_ENABLE_ALLAUTHH: "True"
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+          "openid_connect": {
+            "APPS": [
+              {
+                "provider_id": "authentik",
+                "name": "Authentik",
+                "client_id": "clientid",
+                "secret": "secret",
+                "settings": {
+                "server_url": "https://authentik.domain.com/o/paperless/.well-known/openid-configuration"
+                }
+              }
+            ],
+            "OAUTH_PKCE_ENABLED": "True"
+          }
+        }
+    #cpus: 0.5
+    #mem_limit: 1024m
     networks:
       - dockernet
-  
+
   gotenberg:
     image: docker.io/gotenberg/gotenberg:7.6
+    container_name: paperless-gotenberg
     restart: unless-stopped
     command:
       - gotenberg
       - --chromium-disable-routes=true
     networks:
       - dockernet
-  
+
   tika:
     image: ghcr.io/paperless-ngx/tika:latest
+    container_name: paperless-tika
     restart: unless-stopped
     networks:
       - dockernet
