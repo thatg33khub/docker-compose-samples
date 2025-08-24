@@ -1,0 +1,16 @@
+services:
+  homebox:
+    container_name: homebox
+    image: ghcr.io/sysadminsmedia/homebox:latest
+    ports:
+      - ${homebox_port}:7745
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${appdata}:/data
+    restart: unless-stopped
+    networks:
+      - dockernet
+networks:
+  dockernet:
+    external: true
