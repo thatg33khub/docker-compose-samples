@@ -1,19 +1,30 @@
-version: '3'
-
 services:
   homarr:
     container_name: homarr
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:latest
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${appdata}/configs:/app/data/configs
-      - ${appdata}/icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./appdata:/appdata
+    environment:
+      - TZ=${TZ}
+      - SECRET_ENCRYPTION_KEY=00eb2d815122ecd6792d6745d08107ea4afa17949c963006ba8b15453b45c3bd
+      - BASE_URL=https://portal.swissgeek.site
+      - NEXTAUTH_URL=https://portal.swissgeek.site
+      - AUTH_PROVIDERS=credentials,oidc
+      - AUTH_OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - AUTH_OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+      - AUTH_OIDC_ISSUER=https://${AUTH_DOMAIN}/application/o/${OIDC_SLUG}/
+      - AUTH_OIDC_URI=https://${AUTH_DOMAIN}/application/o/authorize
+      - AUTH_OIDC_CLIENT_NAME=authentik
+      - AUTH_OIDC_SCOPE_OVERWRITE=openid email profile groups
+      - AUTH_OIDC_GROUPS_ATTRIBUTE=groups
+      - AUTH_LOGOUT_REDIRECT_URL=https://${AUTH_DOMAIN}/application/o/${OIDC_SLUG}/end-session/
+#      - AUTH_OIDC_AUTO_LOGIN=true
     ports:
       - ${homarr_port}:7575
     networks:
       - dockernet
-
 networks:
   dockernet:
     external: true
