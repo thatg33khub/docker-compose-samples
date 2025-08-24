@@ -1,0 +1,17 @@
+services:
+  nexterm:
+    image: germannewsmaker/nexterm:1.0.5-OPEN-PREVIEW
+    container_name: nexterm
+    environment:
+      ENCRYPTION_KEY: ${NEXTERM_ENCRYPTION_KEY} # Replace with your generated key
+    ports:
+      - ${nexterm_port}:6989
+    restart: unless-stopped
+    volumes:
+      - ${appdata}:/app/data
+    networks:
+      - dockernet
+
+networks:
+  dockernet:
+    external: true
